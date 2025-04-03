@@ -60,6 +60,6 @@ pipeline {
 }
                 sh 'npm test' 
             }
-           junit allowEmptyResults: true, stdioRetention: '', testResults: 'test-results.xml'
+               junit allowEmptyResults: true, stdioRetention: '', testResults: 'test-results.xml'
         }    
 	}
