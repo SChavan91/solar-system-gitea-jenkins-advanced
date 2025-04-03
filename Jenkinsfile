@@ -42,7 +42,7 @@ pipeline {
                     steps {
                         dependencyCheck additionalArguments: '''
                             --scan \'./\' 
-                            --out \'./\'  
+                            --out \'./target/dependency-check-report\'  
                             --format \'ALL\' 
                             --prettyPrint''', odcInstallation: 'OWASP-DepCheck-10'
 
