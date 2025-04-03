@@ -32,8 +32,8 @@ pipeline {
                 stage('NPM Dependency Audit') {
                     steps {
                         sh '''
-                            npm audit --audit-level=critical || true
-                            // echo $0
+                            npm audit --audit-level=critical 
+                            echo $0
                         '''
                     }
                 }
