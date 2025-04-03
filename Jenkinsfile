@@ -5,14 +5,15 @@ pipeline {
         nodejs 'nodejs-22-6-0'
     }
 
-       environment {
-           MONGO_URI = "mongodb+srv://supercluster.d83jj.mongodb.net/superData"
-    //    MONGO_DB_CREDS = credentials('mongo-db-credentials')
-    //     MONGO_USERNAME = credentials('mongo-db-username')
-    //     MONGO_PASSWORD = credentials('mongo-db-password')
-    //     SONAR_SCANNER_HOME = tool 'sonarqube-scanner-610';
-    //     GITEA_TOKEN = credentials('gitea-api-token')
-      }
+    environment {
+        MONGO_URI = "mongodb+srv://supercluster.d83jj.mongodb.net/superData"
+        // Uncomment and use credentials if needed
+        // MONGO_DB_CREDS = credentials('mongo-db-credentials')
+        // MONGO_USERNAME = credentials('mongo-db-username')
+        // MONGO_PASSWORD = credentials('mongo-db-password')
+        // SONAR_SCANNER_HOME = tool 'sonarqube-scanner-610';
+        // GITEA_TOKEN = credentials('gitea-api-token')
+    }
 
     // options {
     //     disableResume()
@@ -38,7 +39,7 @@ pipeline {
                     }
                 }
 
- 	        stage('OWASP Dependency Check') {
+                stage('OWASP Dependency Check') {
                     steps {
                         dependencyCheck additionalArguments: '''
                             --scan \'./\' 
@@ -47,17 +48,18 @@ pipeline {
                             // --disableYarnAudit \
                             --prettyPrint''', odcInstallation: 'OWASP-DepCheck-10'
 
-                         dependencyCheckPublisher failedTotalCritical: 2, pattern: 'dependency-check-report.xml', stopBuild: false
+                        dependencyCheckPublisher failedTotalCritical: 2, pattern: 'dependency-check-report.xml', stopBuild: false
                     }
                 }
             }
         }
 
-	stage('Unit Testing') {
-             steps {
-                   withCredentials([usernamePassword(credentialsId: 'mongo-db-credentials', passwordVariable: 'MONGO_PASSWORD', usernameVariable: 'MONGO_USERNAME')]) }
-                      sh 'npm test' 
+        stage('Unit Testing') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'mongo-db-credentials', passwordVariable: 'MONGO_PASSWORD', usernameVariable: 'MONGO_USERNAME')]) {
+                    sh 'npm test'
+                }
             }
-              
-        }    
-	}
+        }
+    }
+}
