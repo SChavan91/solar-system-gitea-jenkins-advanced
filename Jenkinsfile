@@ -38,7 +38,7 @@ pipeline {
                     }
                 }
 
-                stage('OWASP Dependency Check') {
+ 	        stage('OWASP Dependency Check') {
                     steps {
                         dependencyCheck additionalArguments: '''
                             --scan \'./\' 
@@ -53,12 +53,10 @@ pipeline {
             }
         }
 
-        stage('Unit Testing') {
-            options { retry(2) }
-            steps {
-                   withCredentials([usernamePassword(credentialsId: 'mongo-db-credentials', passwordVariable: 'MONGO_PASSWORD', usernameVariable: 'MONGO_USERNAME')]) 
-}
-                sh 'npm test' 
+	stage('Unit Testing') {
+             steps {
+                   withCredentials([usernamePassword(credentialsId: 'mongo-db-credentials', passwordVariable: 'MONGO_PASSWORD', usernameVariable: 'MONGO_USERNAME')]) }
+                      sh 'npm test' 
             }
                junit allowEmptyResults: true, stdioRetention: '', testResults: 'test-results.xml'
         }    
