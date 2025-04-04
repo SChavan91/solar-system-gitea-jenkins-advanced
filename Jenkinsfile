@@ -54,13 +54,13 @@ pipeline {
             }
         }
 
-        // stage('Unit Testing') {
-        //     steps {
-        //         withCredentials([usernamePassword(credentialsId: 'mongo-db-credentials', passwordVariable: 'MONGO_PASSWORD', usernameVariable: 'MONGO_USERNAME')]) {
-        //             sh 'npm test'
-        //         }
-        //     }
-        // }
+        stage('Unit Testing') {
+            steps {
+                // withCredentials([usernamePassword(credentialsId: 'mongo-db-credentials', passwordVariable: 'MONGO_PASSWORD', usernameVariable: 'MONGO_USERNAME')]) {
+                    sh 'npm test'
+                // }
+            }
+        }
 
         stage('Code Coverage') {
             steps {
