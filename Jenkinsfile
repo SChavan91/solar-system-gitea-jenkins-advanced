@@ -134,7 +134,7 @@ pipeline {
             //     }
             // }
 
-            junit allowEmptyResults: true, stdioRetention: '', testResults: 'test-results.xml'
+            // junit allowEmptyResults: true, stdioRetention: '', testResults: 'test-results.xml'
             junit allowEmptyResults: true, stdioRetention: '', testResults: 'dependency-check-junit.xml' 
             junit allowEmptyResults: true, stdioRetention: '', testResults: 'trivy-image-CRITICAL-results.xml'
             junit allowEmptyResults: true, stdioRetention: '', testResults: 'trivy-image-MEDIUM-results.xml'
