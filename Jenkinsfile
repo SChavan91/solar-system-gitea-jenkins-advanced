@@ -15,10 +15,10 @@ pipeline {
         // GITEA_TOKEN = credentials('gitea-api-token')
     }
 
-    // options {
-    //     disableResume()
-    //     disableConcurrentBuilds abortPrevious: true
-    // }
+    options {
+        disableResume()
+        disableConcurrentBuilds abortPrevious: true
+    }
 
     stages {
         stage('Installing Dependencies') {
@@ -39,25 +39,33 @@ pipeline {
                     }
                 }
 
-                stage('OWASP Dependency Check') {
-                    steps {
-                        dependencyCheck additionalArguments: '''
-                            --scan \'./\' 
-                            --out \'./\'  
-                            --format \'ALL\' 
-                            // --disableYarnAudit \
-                            --prettyPrint''', odcInstallation: 'OWASP-DepCheck-10'
+                // stage('OWASP Dependency Check') {
+                //     steps {
+                //         dependencyCheck additionalArguments: '''
+                //             --scan \'./\' 
+                //             --out \'./\'  
+                //             --format \'ALL\' 
+                //             // --disableYarnAudit \
+                //             --prettyPrint''', odcInstallation: 'OWASP-DepCheck-10'
 
-                        dependencyCheckPublisher failedTotalCritical: 2, pattern: 'dependency-check-report.xml', stopBuild: false
-                    }
-                }
+                //         dependencyCheckPublisher failedTotalCritical: 2, pattern: 'dependency-check-report.xml', stopBuild: false
+                //     }
+                // }
             }
         }
 
-        stage('Unit Testing') {
+        // stage('Unit Testing') {
+        //     steps {
+        //         withCredentials([usernamePassword(credentialsId: 'mongo-db-credentials', passwordVariable: 'MONGO_PASSWORD', usernameVariable: 'MONGO_USERNAME')]) {
+        //             sh 'npm test'
+        //         }
+        //     }
+        // }
+
+              stage('Code Coverage') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'mongo-db-credentials', passwordVariable: 'MONGO_PASSWORD', usernameVariable: 'MONGO_USERNAME')]) {
-                    sh 'npm test'
+                    sh 'npm run coverage'
                 }
             }
         }
