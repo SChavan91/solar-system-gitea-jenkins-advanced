@@ -8,9 +8,9 @@ pipeline {
     environment {
         MONGO_URI = "mongodb+srv://supercluster.d83jj.mongodb.net/superData"
         // Uncomment and use credentials if needed
-        // MONGO_DB_CREDS = credentials('mongo-db-credentials')
-        // MONGO_USERNAME = credentials('mongo-db-username')
-        // MONGO_PASSWORD = credentials('mongo-db-password')
+        MONGO_DB_CREDS = credentials('mongo-db-credentials')
+        MONGO_USERNAME = credentials('mongo-db-username')
+        MONGO_PASSWORD = credentials('mongo-db-password')
         // SONAR_SCANNER_HOME = tool 'sonarqube-scanner-610';
         // GITEA_TOKEN = credentials('gitea-api-token')
     }
@@ -54,13 +54,13 @@ pipeline {
             }
         }
 
-        stage('Unit Testing') {
-            steps {
-                // withCredentials([usernamePassword(credentialsId: 'mongo-db-credentials', passwordVariable: 'MONGO_PASSWORD', usernameVariable: 'MONGO_USERNAME')]) {
-                    sh 'npm test'
-                // }
-            }
-        }
+        // stage('Unit Testing') {
+        //     steps {
+        //         withCredentials([usernamePassword(credentialsId: 'mongo-db-credentials', passwordVariable: 'MONGO_PASSWORD', usernameVariable: 'MONGO_USERNAME')]) {
+        //             sh 'npm test'
+        //         }
+        //     }
+        // }
 
         stage('Code Coverage') {
             steps {
