@@ -73,15 +73,16 @@ pipeline {
             }
         }
 
-           stage('Build Docker Image') {
+        stage('Build Docker Image') {
             steps {
-                sh  'printenv'
-                sh  'docker build -t shubhamchavan15/solar-system:$GIT_COMMIT .'
+                sh 'printenv'
+                sh 'docker build -t shubhamchavan15/solar-system:$GIT_COMMIT .'
             }
         }
+
         stage('Trivy Vulnerability Scanner') {
             steps {
-                sh  ''' 
+                sh ''' 
                     trivy image shubhamchavan15/solar-system:$GIT_COMMIT \
                         --severity LOW,MEDIUM \
                         --exit-code 0 \
@@ -108,7 +109,7 @@ pipeline {
 
                         trivy convert \
                             --format template --template "@/usr/local/share/trivy/templates/junit.tpl" \
-                            --output trivy-image-MEDIUM-results.xml  trivy-image-MEDIUM-results.json 
+                            --output trivy-image-MEDIUM-results.xml trivy-image-MEDIUM-results.json 
 
                         trivy convert \
                             --format template --template "@/usr/local/share/trivy/templates/junit.tpl" \
@@ -117,46 +118,47 @@ pipeline {
                 }
             }
         }
+
         stage('Push Docker Image') {
             steps {
                 withDockerRegistry(credentialsId: 'docker-hub-credentials', url: "") {
-                    sh  'docker push shubhamchavan15/solar-system:$GIT_COMMIT'
+                    sh 'docker push shubhamchavan15/solar-system:$GIT_COMMIT'
                 }
             }
         }
 
-stage('K8S - Update Image Tag') {
-    steps {
-        script {
-            // Check if the directory exists and delete it if needed
-            sh '''
-                if [ -d "solar-system-gitops-argocd" ]; then
-                    rm -rf solar-system-gitops-argocd
-                fi
-                git clone -b main http://github.com/SChavan91/solar-system-gitops-argocd.git
-            '''
+        stage('K8S - Update Image Tag') {
+            steps {
+                script {
+                    // Check if the directory exists and delete it if needed
+                    sh '''
+                        if [ -d "solar-system-gitops-argocd" ]; then
+                            rm -rf solar-system-gitops-argocd
+                        fi
+                        git clone -b main http://github.com/SChavan91/solar-system-gitops-argocd.git
+                    '''
+                }
+                dir("solar-system-gitops-argocd/kubernetes") {
+                    sh '''
+                        #### Replace Docker Tag ####
+                        git checkout main
+                        # git checkout -b feature-$BUILD_ID  # Uncomment this if you want to create a feature branch
+                        sed -i "s#shubhamchavan15.*#shubhamchavan15/solar-system:$GIT_COMMIT#g" deployment.yml
+                        cat deployment.yml
+                        # Commit and Push to Feature Branch (optional)
+                        # git config --global user.email "jenkins@dasher.com"
+                        # git remote set-url origin http://$GITEA_TOKEN@64.227.187.25:5555/dasher-org/solar-system-gitops-argocd
+                        # git add .
+                        # git commit -am "Updated docker image"
+                        # git push -u origin feature-$BUILD_ID
+                    '''
+                }
+            }
         }
-        dir("solar-system-gitops-argocd/kubernetes") {
-            sh '''
-                #### Replace Docker Tag ####
-                git checkout main
-                # git checkout -b feature-$BUILD_ID  # Uncomment this if you want to create a feature branch
-                sed -i "s#shubhamchavan15.*#shubhamchavan15/solar-system:$GIT_COMMIT#g" deployment.yml
-                cat deployment.yml
-                # Commit and Push to Feature Branch (optional)
-                # git config --global user.email "jenkins@dasher.com"
-                # git remote set-url origin http://$GITEA_TOKEN@64.227.187.25:5555/dasher-org/solar-system-gitops-argocd
-                # git add .
-                # git commit -am "Updated docker image"
-                # git push -u origin feature-$BUILD_ID
-            '''
-         }
-     }
-   }
- }         
-}
-     post {
-          always {
+    }
+
+    post {
+        always {
             script {
                 if (fileExists('solar-system-gitops-argocd')) {
                     sh 'rm -rf solar-system-gitops-argocd'
@@ -179,4 +181,5 @@ stage('K8S - Update Image Tag') {
             publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, keepAll: true, reportDir: 'coverage/lcov-report', reportFiles: 'index.html', reportName: 'Code Coverage HTML Report', reportTitles: '', useWrapperFileDirectly: true])
         }
     }
+}
 
