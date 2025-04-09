@@ -132,7 +132,7 @@ pipeline {
                     sh '''
                         #### Replace Docker Tag ####
                         git checkout main
-                        git checkout -b feature-$BUILD_ID
+                        // git checkout -b feature-$BUILD_ID
                         sed -i "s#shubhamchavan15.*#shubhamchavan15/solar-system:$GIT_COMMIT#g" deployment.yml
                         cat deployment.yml
                         
