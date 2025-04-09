@@ -125,8 +125,7 @@ pipeline {
             }
         }
 
-        stage('K8S - Update Image Tag') {
-            }
+        stage('K8S - Update Image Tag') {     
             steps {
                 sh 'git clone -b main http://github.com/SChavan91/solar-system-gitops-argocd.git'
                 dir("solar-system-gitops-argocd/kubernetes") {
@@ -147,7 +146,7 @@ pipeline {
                 }
             }
         }
-        
+     }
          
     }
         post {
