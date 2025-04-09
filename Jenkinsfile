@@ -150,14 +150,13 @@ stage('K8S - Update Image Tag') {
                 # git commit -am "Updated docker image"
                 # git push -u origin feature-$BUILD_ID
             '''
-        }
-    }
+         }
+     }
+   }
+ }         
 }
- }
-         
-}
-        post {
-        always {
+     post {
+          always {
             // script {
             //     if (fileExists('solar-system-gitops-argocd')) {
             //         sh 'rm -rf solar-system-gitops-argocd'
