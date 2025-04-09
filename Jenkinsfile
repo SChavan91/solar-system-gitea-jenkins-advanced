@@ -155,6 +155,28 @@ pipeline {
                 }
             }
         }
+
+        stage('Commit and Push Changes') {
+            steps {
+                script {
+                    // Check if there are changes
+                    sh "git status"
+                    
+                    // Commit the changes
+                    sh 'git add .'
+                    sh 'git commit -am "Updated Docker image tag"'
+                    
+                    // Push changes to the remote repository using the Gitea token
+                    withCredentials([string(credentialsId: 'gitea-api-token', variable: 'GITEA_TOKEN')]) {
+                        // Set the remote URL with the token for authentication
+                        sh "git remote set-url origin http://$GITEA_TOKEN@$GIT_REPO_URL"
+                        
+                        // Push the changes to the main branch (or your desired branch)
+                        sh 'git push origin main'
+                    }
+                }
+            }
+        }
     }
 
     post {
