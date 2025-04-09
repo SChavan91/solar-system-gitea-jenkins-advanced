@@ -12,7 +12,7 @@ pipeline {
         // MONGO_USERNAME = credentials('mongo-db-username')
         // MONGO_PASSWORD = credentials('mongo-db-password')
         // SONAR_SCANNER_HOME = tool 'sonarqube-scanner-610';
-        // GITEA_TOKEN = credentials('gitea-api-token')
+         GITEA_TOKEN = credentials('gitea-api-token')
     }
 
     options {
@@ -146,11 +146,11 @@ pipeline {
                         sed -i "s#shubhamchavan15.*#shubhamchavan15/solar-system:$GIT_COMMIT#g" deployment.yml
                         cat deployment.yml
                         # Commit and Push to Feature Branch (optional)
-                        # git config --global user.email "jenkins@dasher.com"
-                        # git remote set-url origin http://$GITEA_TOKEN@64.227.187.25:5555/dasher-org/solar-system-gitops-argocd
-                        # git add .
-                        # git commit -am "Updated docker image"
-                        # git push -u origin feature-$BUILD_ID
+                         git config --global user.email "jenkins@dasher.com"
+                         git remote set-url origin http://$GITEA_TOKEN@github.com/SChavan91/solar-system-gitops-argocd.git
+                         git add .
+                         git commit -am "Updated docker image"
+                         git push origin main
                     '''
                 }
             }
