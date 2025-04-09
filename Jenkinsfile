@@ -146,7 +146,7 @@ pipeline {
                         sed -i "s#shubhamchavan15.*#shubhamchavan15/solar-system:$GIT_COMMIT#g" deployment.yml
                         cat deployment.yml
                         # Commit and Push to Feature Branch (optional)
-                         git config --global user.email "jenkins@dasher.com"
+                        # git config --global user.email "jenkins@dasher.com"
                          git remote set-url origin http://$GITEA_TOKEN@github.com/SChavan91/solar-system-gitops-argocd.git
                          git add .
                          git commit -am "Updated docker image"
