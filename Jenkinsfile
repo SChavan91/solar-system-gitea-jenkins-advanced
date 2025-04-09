@@ -125,37 +125,44 @@ pipeline {
             }
         }
 
-        stage('K8S - Update Image Tag') {     
-            steps {
-                sh 'git clone -b main http://github.com/SChavan91/solar-system-gitops-argocd.git'
-                dir("solar-system-gitops-argocd/kubernetes") {
-                    sh '''
-                        #### Replace Docker Tag ####
-                        git checkout main
-                        # git checkout -b feature-$BUILD_ID
-                        sed -i "s#shubhamchavan15.*#shubhamchavan15/solar-system:$GIT_COMMIT#g" deployment.yml
-                        cat deployment.yml
-                        
-                         // #### Commit and Push to Feature Branch ####
-                        # git config --global user.email "jenkins@dasher.com"
-                        # git remote set-url origin http://$GITEA_TOKEN@64.227.187.25:5555/dasher-org/solar-system-gitops-argocd
-                        # git add .
-                        # git commit -am "Updated docker image"
-                        # git push -u origin feature-$BUILD_ID
-                    '''
-                }
-            }
+stage('K8S - Update Image Tag') {
+    steps {
+        script {
+            // Check if the directory exists and delete it if needed
+            sh '''
+                if [ -d "solar-system-gitops-argocd" ]; then
+                    rm -rf solar-system-gitops-argocd
+                fi
+                git clone -b main http://github.com/SChavan91/solar-system-gitops-argocd.git
+            '''
         }
-     }
-         
+        dir("solar-system-gitops-argocd/kubernetes") {
+            sh '''
+                #### Replace Docker Tag ####
+                git checkout main
+                # git checkout -b feature-$BUILD_ID  # Uncomment this if you want to create a feature branch
+                sed -i "s#shubhamchavan15.*#shubhamchavan15/solar-system:$GIT_COMMIT#g" deployment.yml
+                cat deployment.yml
+                # Commit and Push to Feature Branch (optional)
+                # git config --global user.email "jenkins@dasher.com"
+                # git remote set-url origin http://$GITEA_TOKEN@64.227.187.25:5555/dasher-org/solar-system-gitops-argocd
+                # git add .
+                # git commit -am "Updated docker image"
+                # git push -u origin feature-$BUILD_ID
+            '''
+        }
     }
+}
+ }
+         
+}
         post {
         always {
-            script {
-                if (fileExists('solar-system-gitops-argocd')) {
-                    sh 'rm -rf solar-system-gitops-argocd'
-                }
-            }
+            // script {
+            //     if (fileExists('solar-system-gitops-argocd')) {
+            //         sh 'rm -rf solar-system-gitops-argocd'
+            //     }
+            // }
 
             junit allowEmptyResults: true, stdioRetention: '', testResults: 'test-results.xml'
             junit allowEmptyResults: true, stdioRetention: '', testResults: 'dependency-check-junit.xml' 
