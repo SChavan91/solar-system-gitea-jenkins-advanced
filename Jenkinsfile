@@ -169,7 +169,7 @@ pipeline {
                     // Push changes to the remote repository using the Gitea token
                     withCredentials([string(credentialsId: 'gitea-api-token', variable: 'GITEA_TOKEN')]) {
                         // Set the remote URL with the token for authentication
-                        sh "git remote set-url origin http://$GITEA_TOKEN@github.com/SChavan91/solar-system-gitops-argocd.git"
+                        sh "git remote set-url origin https://$GITEA_TOKEN@github.com/SChavan91/solar-system-gitops-argocd.git"
                         
                         // Push the changes to the main branch (or your desired branch)
                         sh 'git push origin main'
